@@ -9,7 +9,7 @@ include_once('simple_html_dom.php');
 $html = new simple_html_dom();
 $url = "http://localhost:81/jl/list.htm";
 $html->load_file($url);
-$sample_count = 4;
+$sample_count = 30;
 foreach($html->find("ul.postspermonth li a") as $link){
 	echo ".....".round($i*100/$sample_count)."% Completed<BR>\n	";
 	if(++$i>=$sample_count) break;

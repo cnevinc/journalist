@@ -1,0 +1,17 @@
+¡ÄMedia name
+For each post
+	time of posting		<a href="http://www.inside.com.tw/2014/02/27/paul-graham-steps-down-from-y-combinator" class="published-time" title="3:10 ¤U¤È" rel="bookmark">¤G¤ë 27, 2014</a>
+	
+	post title			<h2 class="entry-title ">ª¿¨¦³Ð·~±Ð¤÷ 50 ·³¥æ´Î¡GÅý¦~»´¤H³Ð³y¥¼¨Ó</h2>
+	author				<a class="author-link" href="http://www.inside.com.tw/author/editor_wye">Editor_Wye</a>
+	links			
+		URL -> IP Address -> Country/City Name
+						http://www.inside.com.tw/2014/02/27/paul-graham-steps-down-from-y-combinator
+	
+	Metadata			¥
+		# of links	
+		# of photos
+		# of videos
+		Word count
+			post title
+			post

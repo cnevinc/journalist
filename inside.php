@@ -120,7 +120,7 @@ function domain($url) {
 $j_result= json_encode($a_result);
 //echo "<pre>".urldecode($j_result)."</pre>";
 $p=iconv("ASCII","UTF-8","\xEF\xBB\xBF".urldecode($j_result));
-$file = dirname(__FILE__) . '/inside.txt';
+$file = dirname(__FILE__) . '/data/inside.txt';
 file_put_contents($file,"\xEF\xBB\xBF".urldecode($j_result));
 
 ?>

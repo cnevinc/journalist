@@ -27,8 +27,7 @@ function parse($url){
 	
 	global $a_result ;	
 	$a_article["site"] = "Inside";
-	$a_article["link"] = $url;
-
+	
 	$html->load_file($url);
 	
 	foreach($html->find("h2.entry-title") as $link){
@@ -37,7 +36,11 @@ function parse($url){
 		// echo "Article Title(count):".strlen($link->plaintext)."<BR>";
 	}
 	
+	$a_article["link"] = $url;
+	// echo "Link: $t <BR>";
+	
 	$ip = gethostbyname(parse_url($url, PHP_URL_HOST));
+	// echo "IP: $ip <BR>";
 	
 	foreach($html->find("a.author-link") as $link){
 		$a_article["auther"] = $link->plaintext;

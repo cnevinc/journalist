@@ -5,7 +5,7 @@
 </head>
 <?php
 include_once('simple_html_dom.php');
-
+/*
 //$mainHtml = file_get_contents ("http://www.bnext.com.tw/"	);
 //preg_match_all("/article\/list\/cid\/\d{0,3}/", $mainHtml, $matches);
 //print_r($matches);
@@ -15,31 +15,34 @@ $links[] = "http://www.bnext.com.tw/article/list/cid/144";
 $cat_html = new simple_html_dom();
 
 $base_url = "http://www.bnext.com.tw";
-$url = "http://www.bnext.com.tw/article/list/cid/144";
+$url = "http://techorange.com/all/page/2";
 $cat_html->load_file($url);
 $sample_count =10;
 
-foreach($cat_html->find("dd.PageBar a") as $link){
-	 $links[] = "http://www.bnext.com.tw".$link->href."<BR>";
+foreach($cat_html->find("div#loop h2 a") as $link){
+	 $links[] = "".$link->href."<BR>";
 }
+var_dump($links);
+
+exit;
 
 
-$html = new simple_html_dom();	
 foreach($links as $url){
 	echo "Looking at page ... $url <BR>";
 	$cat_html->load_file($url);
 	foreach($cat_html->find("ul.ListRowBlock li a") as $link){
 		if (strpos($link->href,'/id/') !== false) {
 			echo "$i-".$base_url.$link->href."<BR>";
-			parse($base_url.$link->href);
+			//parse($base_url.$link->href);
 			$i++;
 		}
 	}
 }
-echo $i;
-//parse("http://www.bnext.com.tw/article/view/id/31595");
-//parse("http://www.bnext.com.tw/article/view/id/31444");
+echo $i;*/
+$html = new simple_html_dom();	
 
+//parse("http://www.bnext.com.tw/article/view/id/31595");
+parse("http://techorange.com/2014/04/02/how-thinking-like-a-hacker-will-grow-your-business/");
 function parse($url){
 	global $html;
 	global $a_result ;	
@@ -47,24 +50,27 @@ function parse($url){
 	unset($links_in_content);
 	
 	
-	$a_article["site"] = "數位時代";
+	$a_article["site"] = "Tech Orange";
 	$a_article["link"] = $url;
 
 	$html->load_file($url);
 	
 	// Title
-	foreach($html->find("div.lazybox h1") as $link){
+	foreach($html->find("div.to_single_title") as $link){
 		$a_article["title"] = $link->plaintext;
+	
 	}	
 	
 	// Date
-	foreach($html->find("span.Date") as $link){
-		$a_article["time"] = str_replace("發表日期：","",$link->plaintext);
+	foreach($html->find("div.to_single_date") as $link){
+		$a_article["time"] = str_replace(" 發布","",$link->plaintext);
+		$a_article["time"] = str_replace("於 ","",$a_article["time"]);
+			echo $a_article["time"]."<BR>";
 	}
 	
 	// Authors
-	foreach($html->find("span.Author") as $link){
-		$a_article["author"] = str_replace("數位時代網站｜撰文者：","",$link->plaintext);
+	foreach($html->find("div#share-about a") as $link){
+		$a_article["author"] = str_replace("","",$link->plaintext);
 	}
 	
 	// links_in_content
@@ -90,8 +96,11 @@ function parse($url){
 }
 	
 $html->clear(); 
-$cat_html->clear(); 
 unset($html);
+var_dump($a_result);
+exit;
+
+$cat_html->clear(); 
 unset($cat_html);
 
 $j_result= json_encode($a_result);

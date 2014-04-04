@@ -9,10 +9,11 @@ include_once('simple_html_dom.php');
 $html = new simple_html_dom();
 $url = "http://localhost:81/jl/list.htm";
 $html->load_file($url);
-$sample_count =10;
+$sample_count =200;
 foreach($html->find("ul.postspermonth li a") as $link){
-	echo ".....".round($i*100/$sample_count)."% Completed<BR>\n	";
+	//echo "<BR>\n.....".round($i*100/$sample_count)."% Completed";
 	if(++$i>=$sample_count) break;
+	echo "<BR>.....parsing article: "+($i++)+"<BR>\n";
 	parse($link->href);
 		
 		
@@ -123,4 +124,4 @@ file_put_contents($file,"\xEF\xBB\xBF".urldecode($j_result));
 ?>
 
 
-Parse Completed!
+<BR>\n	Parse Completed!

@@ -3,18 +3,20 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
 
 </head>
+<body>
 <?php
 include_once('simple_html_dom.php');
 
 $html = new simple_html_dom();
 $url = "http://localhost:81/jl/list.htm";
 $html->load_file($url);
-$sample_count =200;
+$sample_count =100 ;
 foreach($html->find("ul.postspermonth li a") as $link){
-	//echo "<BR>\n.....".round($i*100/$sample_count)."% Completed";
-	if(++$i>=$sample_count) break;
-	echo "<BR>.....parsing article: "+($i++)+"<BR>\n";
+	if($i>$sample_count) break;
+	
+	echo "$i- parsing $link->href <BR>";
 	parse($link->href);
+	$i++;
 		
 		
 }
@@ -41,14 +43,14 @@ function parse($url){
 	$ip = gethostbyname(parse_url($url, PHP_URL_HOST));
 	
 	foreach($html->find("a.author-link") as $link){
-		$a_article["auther"] = $link->plaintext;
+		$a_article["author"] = $link->plaintext;
 		// echo "Auther:".$link->plaintext."<BR>";
 	}
 
-	foreach($html->find("a.published-time") as $link){
-		$a_article["time"] = $link->plaintext;
-		// echo "TIME:".$link->plaintext."<BR>";
-	}
+	$mainHtml = $a_article["link"];
+		preg_match("/\d{4}\/\d{2}\/\d{2}/", $mainHtml, $matches);
+		$time = $matches[0];
+		$a_article["time"] = str_replace("/","-",$time);
 	
 	foreach($html->find("ol li a") as $link){
 		if (strpos($link->href,'http') !== false) {
@@ -95,7 +97,7 @@ function parse($url){
 		}
 		// echo "Word count post:".(strlen($link->plaintext)-strlen($link2->plaintext)-strlen($link3->plaintext)-strlen($link4->plaintext));
 		
-		$a_article["text_in_content"] = $content;
+		//$a_article["text_in_content"] = $content;
 	}
 	foreach($a_article as $key => $value){
 		if (!is_array($value)){
@@ -114,14 +116,29 @@ function domain($url) {
 	preg_match("/[^\.\/]+\.[^\.\/]+$/", $host, $matches);
     return @$matches[0];
 }
+function toDate($date){
+	$date = str_replace("一月","01",$date);
+	$date = str_replace("二月","02",$date);
+	$date = str_replace("三月","03",$date);
+	$date = str_replace("四月","04",$date);
+	$date = str_replace("五月","05",$date);
+	$date = str_replace("六月","06",$date);
+	$date = str_replace("七月","07",$date);
+	$date = str_replace("八月","08",$date);
+	$date = str_replace("九月","09",$date);
+	$date = str_replace("十月","10",$date);
+	$date = str_replace("十一月","11",$date);
+	$date = str_replace("十二月","12",$date);
+	return $date;
+}
 
 $j_result= json_encode($a_result);
 //echo "<pre>".urldecode($j_result)."</pre>";
 $p=iconv("ASCII","UTF-8","\xEF\xBB\xBF".urldecode($j_result));
 $file = dirname(__FILE__) . '/data/inside.txt';
 file_put_contents($file,"\xEF\xBB\xBF".urldecode($j_result));
+echo "Parsed " .$i ." files completed<BR>";
 
 ?>
+</body>
 
-
-<BR>\n	Parse Completed!

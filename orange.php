@@ -11,13 +11,19 @@ unset($links);
 $cat_html = new simple_html_dom();
 $html = new simple_html_dom();	
 $base_url = "http://techorange.com/all/page/";
+$sample_count = 100;
 for($i = 2; $i<20;$i++){
+	
 	$url = $base_url.$i;
 	$cat_html->load_file($url);
 
 	foreach($cat_html->find("div#loop h2 a") as $link){
+		if($sample_index>$sample_count) break;
+		echo "$sample_index-".$base_url.$link->href."<BR>";
 		parse($link->href);
+		$sample_index++;
 	}
+	
 }
 
 
@@ -37,14 +43,13 @@ function parse($url){
 	// Title
 	foreach($html->find("div.to_single_title") as $link){
 		$a_article["title"] = $link->plaintext;
-	
 	}	
 	
 	// Date
 	foreach($html->find("div.to_single_date") as $link){
-		$a_article["time"] = str_replace(" 發布","",$link->plaintext);
-		$a_article["time"] = str_replace("於 ","",$a_article["time"]);
-			echo $a_article["time"]."<BR>";
+		$mainHtml = $link->plaintext;
+		preg_match("/\d{4}\-\d{2}\-\d{2}/", $mainHtml, $matches);
+		$a_article["time"] = ($matches[0]);
 	}
 	
 	// Authors
@@ -62,7 +67,7 @@ function parse($url){
 	
 	// text_in_content
 	foreach($html->find("div[class='to_single_content_article clear']") as $link){
-		$a_article["text_in_content "] = $link->plaintext;
+		//$a_article["text_in_content "] = $link->plaintext;
 	}
 	
 	
@@ -87,7 +92,8 @@ $j_result= json_encode($a_result);
 //echo "<pre>".urldecode($j_result)."</pre>";
 $p=iconv("ASCII","UTF-8","\xEF\xBB\xBF".urldecode($j_result));
 $file = dirname(__FILE__) . '/data/orange.txt';
-file_put_contents($file,"\xEF\xBB\xBF".urldecode($j_result));
+file_put_contents($file,"\xEF\xBB\xBF".urldecode($j_result)."\n\r");
+echo "Parsed " .$sample_index ." files completed<BR>";
 ?>
 
 <BR/>

@@ -9,6 +9,7 @@ include_once('simple_html_dom.php');
 //$mainHtml = file_get_contents ("http://www.bnext.com.tw/"	);
 //preg_match_all("/article\/list\/cid\/\d{0,3}/", $mainHtml, $matches);
 //print_r($matches);
+
 unset($links);
 $links[] = "http://www.bnext.com.tw/article/list/cid/144";
 
@@ -17,10 +18,14 @@ $cat_html = new simple_html_dom();
 $base_url = "http://www.bnext.com.tw";
 $url = "http://www.bnext.com.tw/article/list/cid/144";
 $cat_html->load_file($url);
-$sample_count =10;
+$sample_count =100;
 
 foreach($cat_html->find("dd.PageBar a") as $link){
-	 $links[] = "http://www.bnext.com.tw".$link->href."<BR>";
+	$found = "http://www.bnext.com.tw".$link->href."<BR>";
+	 if (!in_array($found ,$links)){
+		$links[] = $found ; 
+		echo "http://www.bnext.com.tw".$link->href."<BR>";
+	}
 }
 
 
@@ -30,13 +35,15 @@ foreach($links as $url){
 	$cat_html->load_file($url);
 	foreach($cat_html->find("ul.ListRowBlock li a") as $link){
 		if (strpos($link->href,'/id/') !== false) {
+			if ($i>$sample_count) break;
+
 			echo "$i-".$base_url.$link->href."<BR>";
 			parse($base_url.$link->href);
 			$i++;
 		}
 	}
 }
-echo $i;
+
 //parse("http://www.bnext.com.tw/article/view/id/31595");
 //parse("http://www.bnext.com.tw/article/view/id/31444");
 
@@ -53,7 +60,7 @@ function parse($url){
 	$html->load_file($url);
 	
 	// Title
-	foreach($html->find("div.lazybox h1") as $link){
+	foreach($html->find("div.ViewBox h1") as $link){
 		$a_article["title"] = $link->plaintext;
 	}	
 	
@@ -77,7 +84,7 @@ function parse($url){
 	
 	// text_in_content
 	foreach($html->find("div.Article") as $link){
-		$a_article["text_in_content "] = $link->plaintext;
+		//$a_article["text_in_content "] = $link->plaintext;
 	}
 	
 	
@@ -99,11 +106,11 @@ $j_result= json_encode($a_result);
 //echo "<pre>".urldecode($j_result)."</pre>";
 $p=iconv("ASCII","UTF-8","\xEF\xBB\xBF".urldecode($j_result));
 $file = dirname(__FILE__) . '/data/bnext.txt';
-file_put_contents($file,"\xEF\xBB\xBF".urldecode($j_result));
+file_put_contents($file,"\xEF\xBB\xBF".urldecode($j_result)."\n\r");
+echo "Parsed " .$i ." files completed<BR>";
 ?>
 
 <BR/>
-Parse Completed!
 <pre>
 <?php
 //var_dump($a_result);
